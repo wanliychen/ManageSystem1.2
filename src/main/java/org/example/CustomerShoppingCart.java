@@ -2,6 +2,9 @@ package org.example;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -146,17 +149,31 @@ public class CustomerShoppingCart {
         System.out.println("结账成功，购物车已清空！");
     }
 
-    // 查看购物历史
-    public void getPurchaseHistory() {
+    public void getPurchaseHistory() throws IOException {
         if (purchaseHistoryList.isEmpty()) {
             System.out.println("暂无购物历史。");
             return;
         }
-
         System.out.println("您的购物历史：");
         for (Map<Integer, Integer> history : purchaseHistoryList) {
-            System.out.println("购物时间: " + LocalDateTime.now()); // 或者存储时间信息
-            System.out.println("商品清单: " + history);
+            // 获取当前北京时间
+            ZonedDateTime beijingTime = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"));
+    
+            // 使用包含日期和时间的 ZonedDateTime 对象
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String formattedDateTime = beijingTime.format(formatter);
+    
+            System.out.println("购物时间: " + formattedDateTime);
+            System.out.println("商品清单:");
+    
+            for (Map.Entry<Integer, Integer> entry : history.entrySet()) {
+                int productId = entry.getKey();
+                int quantity = entry.getValue();
+    
+                System.out.println("商品ID: " + productId + ", 数量: " + quantity);
+            }
         }
     }
+    
+
 }

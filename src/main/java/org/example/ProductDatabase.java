@@ -143,6 +143,8 @@ public class ProductDatabase {
         }
     }
 
+
+
     // 获取所有商品
     public static List<Product> getAllProducts() throws IOException {
         List<Product> products = new ArrayList<>();
@@ -172,13 +174,38 @@ public class ProductDatabase {
         return products;
     }
 
+    // // 更新商品库存数量（减少）
+    // public static void updateProductQuantity(int productId, int quantity) throws IOException {
+    //     File file = new File(PRODUCT_FILE);
+    //     if (!file.exists()) return;
+
+    //     try (Workbook workbook = new XSSFWorkbook(new FileInputStream(file));
+    //          FileOutputStream fos = new FileOutputStream(file)) {
+
+    //         Sheet sheet = workbook.getSheet("Products");
+    //         if (sheet == null) return;
+
+    //         for (Row row : sheet) {
+    //             if (row.getRowNum() == 0) continue; 
+    //             if (row.getCell(0).getNumericCellValue() == productId) {
+    //                 int currentQuantity = (int) row.getCell(6).getNumericCellValue();
+    //                 row.getCell(6).setCellValue(currentQuantity - quantity);
+    //                 workbook.write(fos);
+    //                 return;
+    //             }
+    //         }
+    //     } catch (IOException e) {
+    //         System.out.println("Error finding product: " + e.getMessage());
+    //     }
+    // }
+
     // 更新商品库存数量（减少）
     public static void updateProductQuantity(int productId, int quantity) throws IOException {
         File file = new File(PRODUCT_FILE);
         if (!file.exists()) return;
 
         try (Workbook workbook = new XSSFWorkbook(new FileInputStream(file));
-             FileOutputStream fos = new FileOutputStream(file)) {
+            FileOutputStream fos = new FileOutputStream(file)) {
 
             Sheet sheet = workbook.getSheet("Products");
             if (sheet == null) return;
@@ -187,38 +214,32 @@ public class ProductDatabase {
                 if (row.getRowNum() == 0) continue; 
                 if (row.getCell(0).getNumericCellValue() == productId) {
                     int currentQuantity = (int) row.getCell(6).getNumericCellValue();
-                    row.getCell(6).setCellValue(currentQuantity - quantity);
+                    int newQuantity = currentQuantity - quantity;
+
+                    if (newQuantity <= 0) {
+                        // 如果商品数量减少到 0 或以下，删除该商品
+                        int rowIndexToDelete = row.getRowNum();
+                        sheet.removeRow(row);
+                        
+                        // 调整行号
+                        for (int i = rowIndexToDelete; i <= sheet.getLastRowNum(); i++) {
+                            Row nextRow = sheet.getRow(i);
+                            if (nextRow != null) {
+                                nextRow.setRowNum(i - 1);
+                            }
+                        }
+                    } else {
+                        // 更新商品数量
+                        row.getCell(6).setCellValue(newQuantity);
+                    }
                     workbook.write(fos);
                     return;
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error finding product: " + e.getMessage());
+            System.out.println("Error updating product quantity: " + e.getMessage());
         }
     }
 
-    // 更新商品库存数量（增加）
-    public static void increaseProductQuantity(int productId, int quantity) throws IOException {
-        File file = new File(PRODUCT_FILE);
-        if (!file.exists()) return;
 
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(file));
-             FileOutputStream fos = new FileOutputStream(file)) {
-
-            Sheet sheet = workbook.getSheet("Products");
-            if (sheet == null) return;
-
-            for (Row row : sheet) {
-                if (row.getRowNum() == 0) continue; 
-                if (row.getCell(0).getNumericCellValue() == productId) {
-                    int currentQuantity = (int) row.getCell(6).getNumericCellValue();
-                    row.getCell(6).setCellValue(currentQuantity + quantity);
-                    workbook.write(fos);
-                    return;
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error finding product: " + e.getMessage());
-        }
-    }
 }
