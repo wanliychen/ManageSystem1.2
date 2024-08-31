@@ -7,18 +7,17 @@ import java.io.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-
 public class CustomerDatabase {
-    private static final String FILE_PATH = "customers.xlsx";
+    
+    private static final String CUSTOMER_FILE = "customers.xlsx";  
 
     // 初始化
     public void initializeDatabase() {
         try (Workbook workbook = new XSSFWorkbook();
-             FileOutputStream fileOut = new FileOutputStream(FILE_PATH)) {
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {  // 使用 CUSTOMER_FILE
             Sheet sheet = workbook.createSheet("Customers");
             Row headerRow = sheet.createRow(0);
             headerRow.createCell(0).setCellValue("username");
@@ -36,8 +35,8 @@ public class CustomerDatabase {
 
     // 增加用户信息
     public static boolean addCustomer(Customer customer) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(FILE_PATH));
-             FileOutputStream fileOut = new FileOutputStream(FILE_PATH)) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));  
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) { 
             Sheet sheet = workbook.getSheetAt(0);
             int rowCount = sheet.getLastRowNum();
             Row row = sheet.createRow(++rowCount);
@@ -58,8 +57,8 @@ public class CustomerDatabase {
 
     // 删除用户信息
     public static void deleteCustomerByUsername(String username) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(FILE_PATH));
-             FileOutputStream fileOut = new FileOutputStream(FILE_PATH)) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));  
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {  
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getCell(0).getStringCellValue().equals(username)) {
@@ -75,7 +74,7 @@ public class CustomerDatabase {
 
     // 查找用户信息
     public static Customer findCustomerByUsername(String username) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(FILE_PATH))) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {  
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getCell(0).getStringCellValue().equals(username)) {
@@ -97,8 +96,8 @@ public class CustomerDatabase {
 
     // 更新用户信息
     public static void updateCustomer(String username, Customer updatedCustomer) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(FILE_PATH));
-             FileOutputStream fileOut = new FileOutputStream(FILE_PATH)) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));  
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {  
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getCell(0).getStringCellValue().equals(username)) {
@@ -116,12 +115,12 @@ public class CustomerDatabase {
         }
     }
 
-   
+    // 获取所有用户信息
     public static List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(FILE_PATH))) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {  
             Sheet sheet = workbook.getSheet("Customers");
 
             // 跳过表头，从第1行开始读取

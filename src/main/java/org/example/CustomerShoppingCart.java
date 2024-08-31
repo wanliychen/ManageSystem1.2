@@ -27,6 +27,7 @@ public class CustomerShoppingCart {
             if (product != null) {
                 shoppingCart.put(productId, shoppingCart.getOrDefault(productId, 0) + quantity);
                 productDatabase.updateProductQuantity(productId, quantity);
+                System.out.println("加入成功");
             } else {
                 System.out.println("Product ID " + productId + " not found in the database.");
             }

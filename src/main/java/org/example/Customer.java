@@ -1,9 +1,6 @@
 package org.example;
 
-
-
 import java.sql.Date;
-
 
 public class Customer {
 

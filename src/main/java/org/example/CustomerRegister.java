@@ -26,9 +26,9 @@ public class CustomerRegister {
         System.out.println("请输入邮箱：");
         String email = scanner.nextLine();
         System.out.print("请输入电话号码: ");
-        String phone = scanner.next();
+        String phone = scanner.nextLine();
         System.out.print("请输入用户等级: ");
-        String userLevel = scanner.next();
+        String userLevel = scanner.nextLine();
 
         // 注册日期可以直接使用当前日期
         Date registrationDate = new Date(System.currentTimeMillis());

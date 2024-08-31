@@ -11,6 +11,10 @@ public class Main {
         Administrator admin = new Administrator();
         admin.createTable();
         admin.insertDefaultAdmin();
+
+        // CustomerDatabase customerDatabase=new CustomerDatabase();
+        // customerDatabase.initializeDatabase();
+
  
         CustomerRegister customerRegister=new CustomerRegister();
         CustomerLogin customerLogin=new CustomerLogin();

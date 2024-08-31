@@ -4,7 +4,6 @@ package org.example;
 import java.util.Scanner;
 
 public class CustomerAction {
-    
 
     public void run() {
         Scanner scanner=new Scanner(System.in);
