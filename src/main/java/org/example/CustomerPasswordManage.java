@@ -51,21 +51,6 @@ public class CustomerPasswordManage {
         }
     }
 
-     // 使用MD5加密
-     private static String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hashBytes = md.digest(password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("MD5 algorithm not found", e);
-        }
-    }
-
     public void resetPassword(String username) {
        
         System.out.println("请输入注册所使用的邮箱地址：");
@@ -100,35 +85,7 @@ public class CustomerPasswordManage {
             System.out.println("用户名或邮箱地址不正确。");
         }
     }
-    
-    // public void resetPassword(String username) {
-        
-    //     String newPassword = generateRandomPassword();
-    //     String hashedPassword = hashPassword(newPassword);
 
-    //     try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {
-    //         Sheet sheet = workbook.getSheetAt(0);
-    //         if (sheet == null) {
-    //             System.out.println("用户信息文件错误");
-    //             return;
-    //         }
-    //         for (Row row : sheet) {
-    //             if (row.getCell(0).getStringCellValue().equals(username)) {
-    //                 row.getCell(1).setCellValue(hashedPassword);
-    //                 try (FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
-    //                     workbook.write(fileOut);
-    //                     System.out.println("密码重置成功！");
-                       
-    //                 }
-    //                 return;
-    //             }
-    //         }
-    //         System.out.println("用户名不存在！");
-    //     } catch (IOException e) {
-    //         System.out.println("密码重置失败: " + e.getMessage());
-    //     }
-    // }
- 
     // 生成随机密码
     private String generateRandomPassword() {
         String LOWERCASE_CHARS = "abcdefghijklmnopqrstuvwxyz";
@@ -170,11 +127,7 @@ public class CustomerPasswordManage {
         return new String(passwordArray);
     }
 
-    private void sendPasswordToEmail(String email, String password) {
-        // 模拟发送邮件功能
-        System.out.println("新密码发送到邮件" + email + "，新密码为：" + password);
-    }
-    
+
 
     private boolean isEmailCorrect(String username, String email) {
         try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {
@@ -196,5 +149,28 @@ public class CustomerPasswordManage {
             return false;
         }
     }
+
+
+    
+     // 使用MD5加密
+     private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hashBytes = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("MD5 algorithm not found", e);
+        }
+    }
+    
+    private void sendPasswordToEmail(String email, String password) {
+        // 模拟发送邮件功能
+        System.out.println("新密码发送到邮件" + email + "，新密码为：" + password);
+    }
+    
 }
 
