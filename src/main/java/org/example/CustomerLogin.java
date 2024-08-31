@@ -18,7 +18,7 @@ public class CustomerLogin {
 
     CustomerPasswordManage cpm=new CustomerPasswordManage();
 
-    public void run() {
+    public void run() throws IOException {
 
         while (true) {
             System.out.println("请输入用户名：");

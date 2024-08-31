@@ -18,14 +18,13 @@ public class CustomerRegister {
 
      // 用户注册
      public void run() {
-        
         System.out.println("请输入用户名：");
         String username = scanner.nextLine();
         System.out.println("请输入密码：");
         String password = scanner.nextLine();
         System.out.println("请输入邮箱：");
         String email = scanner.nextLine();
-        System.out.print("请输入电话号码: ");
+        System.out.println("请输入电话号码：");
         String phone = scanner.nextLine();
         System.out.print("请输入用户等级: ");
         String userLevel = scanner.nextLine();

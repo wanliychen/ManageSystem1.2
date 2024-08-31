@@ -1,11 +1,12 @@
 package org.example;
 
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class CustomerAction {
 
-    public void run() {
+    public void run() throws IOException {
         Scanner scanner=new Scanner(System.in);
         
         RunShopping runShopping=new RunShopping();

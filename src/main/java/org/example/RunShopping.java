@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.util.*;
 
 
@@ -11,7 +12,7 @@ public class RunShopping {
     ProductDatabase productDatabase=new ProductDatabase();
 
  
-    public void run() {
+    public void run() throws IOException {
         while (true) {
             displayMenu();
             int choice = scanner.nextInt();
@@ -28,7 +29,7 @@ public class RunShopping {
                     shoppingCart.updateCartItemQuantity();
                     break;
                 case 4:
-                    shoppingCart.getShoppingCartHistory();
+                    shoppingCart.getPurchaseHistory();
                     break;
                 case 5:
                     shoppingCart.checkout();
