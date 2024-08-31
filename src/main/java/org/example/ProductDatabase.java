@@ -174,7 +174,7 @@ public class ProductDatabase {
         return products;
     }
 
-    // 更新商品库存数量（减少）
+    // 更新商品库存数量
     public static void updateProductQuantity(int productId, int quantity) throws IOException {
         File file = new File(PRODUCT_FILE);
         if (!file.exists()) return;

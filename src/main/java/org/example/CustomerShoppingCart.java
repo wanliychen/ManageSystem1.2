@@ -134,11 +134,25 @@ public class CustomerShoppingCart {
                 return;
         }
 
-        // 模拟支付成功后更新商品库存
+
+
+       
         for (Map.Entry<Integer, Integer> entry : shoppingCart.entrySet()) {
             int productId = entry.getKey();
-            int quantity = entry.getValue();
-            productDatabase.updateProductQuantity(productId, quantity);
+            int requestedQuantity = entry.getValue();
+    
+            // 检查数据库中的库存数量
+            Product product = productDatabase.findProductById(productId);
+            if (product != null) {
+                int availableStock = product.getNums();
+                // 如果购物车中的商品数量超过库存，调整为库存的最大数量
+                if ( availableStock< requestedQuantity) {
+                    System.out.println("商品ID " + productId + " 库存不足，调整购买数量为 " + availableStock+ " 件。");
+                    shoppingCart.put(entry.getKey(),availableStock);
+                }
+            }
+            // 更新数据库中的库存
+            productDatabase.updateProductQuantity(productId, requestedQuantity);
         }
 
         // 保存购买记录
