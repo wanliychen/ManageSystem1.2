@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.*;
 
 
-public class RunShopping {
+public class RunShopping implements Actionable{
     
     Scanner scanner=new Scanner(System.in);
     Customer customer=new Customer();
@@ -12,6 +12,7 @@ public class RunShopping {
     ProductDatabase productDatabase=new ProductDatabase();
 
  
+    @Override
     public void run() throws IOException {
         while (true) {
             displayMenu();
@@ -43,7 +44,8 @@ public class RunShopping {
         }
     }
 
-    private void displayMenu() {
+    @Override
+    public void displayMenu() {
         System.out.println("请选择操作：");
         System.out.println("1. 加入购物车");
         System.out.println("2. 从购物车删除");

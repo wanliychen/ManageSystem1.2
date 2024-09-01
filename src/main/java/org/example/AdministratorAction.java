@@ -3,7 +3,9 @@ package org.example;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class AdministratorAction {
+public class AdministratorAction implements Actionable{
+
+    @Override
     public void run() throws IOException{
         Scanner scanner=new Scanner(System.in);
         
@@ -40,7 +42,8 @@ public class AdministratorAction {
         }
     }
 
-    private void displayMenu(){
+    @Override
+    public void displayMenu(){
         System.out.println("请选择操作：");
         System.out.println("1. 商品管理");
         System.out.println("2. 用户管理");

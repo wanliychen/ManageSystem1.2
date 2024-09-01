@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Scanner;
 
-public class RunCustomer {
+public class RunCustomer implements Actionable{
     private Scanner scanner;
     private CustomerDatabase customerDatabase;
 
@@ -14,6 +14,7 @@ public class RunCustomer {
         this.customerDatabase = new CustomerDatabase();
     }
 
+    @Override
     public void run() {
         while (true) {
             displayMenu();
@@ -46,7 +47,8 @@ public class RunCustomer {
         }
     }
 
-    private void displayMenu() {
+    @Override
+    public void displayMenu() {
         System.out.println("请选择操作：");
         System.out.println("1. 增加用户");
         System.out.println("2. 删除用户");
