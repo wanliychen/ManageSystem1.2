@@ -5,38 +5,46 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class CustomerDatabase {
-    
-    private static final String CUSTOMER_FILE = "customers.xlsx";  
 
-    // 初始化
-    public void initializeDatabase() {
-        try (Workbook workbook = new XSSFWorkbook();
-             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {  // 使用 CUSTOMER_FILE
-            Sheet sheet = workbook.createSheet("Customers");
-            Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("username");
-            headerRow.createCell(1).setCellValue("password");
-            headerRow.createCell(2).setCellValue("useremail");
-            headerRow.createCell(3).setCellValue("phone");
-            headerRow.createCell(4).setCellValue("registrationDate");
-            headerRow.createCell(5).setCellValue("userLevel");
-            workbook.write(fileOut);
-            System.out.println("customers初始化成功！");
-        } catch (IOException e) {
-            System.out.println("customers初始化失败: " + e.getMessage());
+    private static final String CUSTOMER_FILE = "customers.xlsx";
+
+    public CustomerDatabase() {
+        initializeDatabase();
+    }
+
+    // 初始化数据库
+    private void initializeDatabase() {
+        File file = new File(CUSTOMER_FILE);
+        if (!file.exists()) {
+            try (Workbook workbook = new XSSFWorkbook();
+                 FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
+                Sheet sheet = workbook.createSheet("Customers");
+                Row headerRow = sheet.createRow(0);
+                headerRow.createCell(0).setCellValue("username");
+                headerRow.createCell(1).setCellValue("password");
+                headerRow.createCell(2).setCellValue("useremail");
+                headerRow.createCell(3).setCellValue("phone");
+                headerRow.createCell(4).setCellValue("registrationDate");
+                headerRow.createCell(5).setCellValue("userLevel");
+                workbook.write(fileOut);
+                System.out.println("customers初始化成功！");
+            } catch (IOException e) {
+                System.out.println("customers初始化失败: " + e.getMessage());
+            }
         }
     }
 
     // 增加用户信息
     public static boolean addCustomer(Customer customer) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));  
-             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) { 
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
             Sheet sheet = workbook.getSheetAt(0);
             int rowCount = sheet.getLastRowNum();
             Row row = sheet.createRow(++rowCount);
@@ -55,18 +63,37 @@ public class CustomerDatabase {
         }
     }
 
-    // 删除用户信息
+    // 删除用户信息（带确认提示）
     public static void deleteCustomerByUsername(String username) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));  
-             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {  
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("您确定要删除用户 " + username + " 吗？该操作不可撤销。 (y/n)");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+
+        if (!confirmation.equals("y")) {
+            System.out.println("删除操作已取消。");
+            return; // 取消删除操作
+        }
+
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
             Sheet sheet = workbook.getSheetAt(0);
+            boolean userFound = false;
+
             for (Row row : sheet) {
                 if (row.getCell(0).getStringCellValue().equals(username)) {
                     sheet.removeRow(row);
+                    userFound = true;
                     break;
                 }
             }
-            workbook.write(fileOut);
+
+            if (userFound) {
+                workbook.write(fileOut);
+                System.out.println("用户 " + username + " 已成功删除。");
+            } else {
+                System.out.println("未找到用户 " + username + "。");
+            }
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -74,7 +101,7 @@ public class CustomerDatabase {
 
     // 查找用户信息
     public static Customer findCustomerByUsername(String username) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {  
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getCell(0).getStringCellValue().equals(username)) {
@@ -96,8 +123,8 @@ public class CustomerDatabase {
 
     // 更新用户信息
     public static void updateCustomer(String username, Customer updatedCustomer) {
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));  
-             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {  
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));
+             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
             Sheet sheet = workbook.getSheetAt(0);
             for (Row row : sheet) {
                 if (row.getCell(0).getStringCellValue().equals(username)) {
@@ -120,10 +147,9 @@ public class CustomerDatabase {
         List<Customer> customers = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {  
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE))) {
             Sheet sheet = workbook.getSheet("Customers");
 
-            // 跳过表头，从第1行开始读取
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) continue;
@@ -133,15 +159,14 @@ public class CustomerDatabase {
                     String password = row.getCell(1).getStringCellValue();
                     String useremail = row.getCell(2).getStringCellValue();
                     String phone = row.getCell(3).getStringCellValue();
-                    
-                    // 读取日期，并进行格式化检查
+
                     String dateString = row.getCell(4).getStringCellValue();
                     java.util.Date utilDate;
                     try {
                         utilDate = sdf.parse(dateString);
                     } catch (ParseException e) {
                         System.out.println("日期格式错误: " + dateString);
-                        utilDate = new java.util.Date(); // 赋予一个默认值
+                        utilDate = new java.util.Date();
                     }
                     Date sqlDate = new Date(utilDate.getTime());
 

@@ -10,6 +10,34 @@ import java.util.List;
 public class ProductDatabase {
 
     private static final String PRODUCT_FILE = "products.xlsx";
+    
+    public ProductDatabase(){
+        initializeDatabase();
+    }
+
+     // 初始化数据库
+     private void initializeDatabase() {
+        File file = new File(PRODUCT_FILE);
+        if (!file.exists()) {
+            try (Workbook workbook = new XSSFWorkbook();
+                 FileOutputStream fileOut = new FileOutputStream(PRODUCT_FILE)) {
+                Sheet sheet = workbook.createSheet("Products");
+                Row headerRow = sheet.createRow(0);
+                headerRow.createCell(0).setCellValue("productId");
+                headerRow.createCell(1).setCellValue("productName");
+                headerRow.createCell(2).setCellValue("manufacturer");
+                headerRow.createCell(3).setCellValue("model");
+                headerRow.createCell(4).setCellValue("purchasePrice");
+                headerRow.createCell(5).setCellValue("retailPrice");
+                headerRow.createCell(6).setCellValue("quantity");
+                workbook.write(fileOut);
+                System.out.println("products初始化成功！");
+            } catch (IOException e) {
+                System.out.println("products初始化失败: " + e.getMessage());
+            }
+        }
+    }
+
 
     // 添加商品
     public void addProduct(Product product) throws IOException {
@@ -218,3 +246,12 @@ public class ProductDatabase {
 
 
 }
+
+
+
+
+
+
+
+
+
