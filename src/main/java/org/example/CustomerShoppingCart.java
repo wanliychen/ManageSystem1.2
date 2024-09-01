@@ -134,8 +134,6 @@ public class CustomerShoppingCart {
                 return;
         }
 
-
-
        
         for (Map.Entry<Integer, Integer> entry : shoppingCart.entrySet()) {
             int productId = entry.getKey();

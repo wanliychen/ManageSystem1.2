@@ -70,7 +70,8 @@ public class RunCustomer {
         System.out.println("请输入用户等级：");
         String userLevel = scanner.nextLine();
 
-        Customer newCustomer = new Customer(username, password, useremail, phone, java.sql.Date.valueOf(registrationDate), userLevel);
+        String hashPassword=hashPassword(password);
+        Customer newCustomer = new Customer(username, hashPassword, useremail, phone, java.sql.Date.valueOf(registrationDate), userLevel);
         customerDatabase.addCustomer(newCustomer);
         System.out.println("用户添加成功！");
     }
