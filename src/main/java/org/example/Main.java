@@ -12,10 +12,6 @@ public class Main {
         admin.createTable();
         admin.insertDefaultAdmin();
 
-        // CustomerDatabase customerDatabase=new CustomerDatabase();
-        // customerDatabase.initializeDatabase();
-
- 
         CustomerRegister customerRegister=new CustomerRegister();
         CustomerLogin customerLogin=new CustomerLogin();
         Scanner scanner = new Scanner(System.in);
