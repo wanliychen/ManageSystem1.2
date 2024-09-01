@@ -82,6 +82,15 @@ public class ProductDatabase {
 
     // 删除商品
     public static void deleteProduct(int productId) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("您确定要删除用户 " + username + " 吗？该操作不可撤销。 (y/n)");
+        String confirmation = scanner.nextLine().trim().toLowerCase();
+
+        if (!confirmation.equals("y")) {
+            System.out.println("删除操作已取消。");
+            return; // 取消删除操作
+        }
+
         File file = new File(PRODUCT_FILE);
         if (!file.exists()) return;
 
