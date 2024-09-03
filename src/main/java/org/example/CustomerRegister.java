@@ -1,94 +1,43 @@
 package org.example;
 
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import java.io.*;
-import java.sql.Date;
 import java.util.*;
 
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 public class CustomerRegister {
-    private static final String CUSTOMER_FILE = "customers.xlsx";
+    private List<Customer> customersList;
 
-    private Scanner scanner = new Scanner(System.in);
+    public CustomerRegister(List<Customer> customersList) {
+        this.customersList = customersList;
+    }
 
-     // 用户注册
-     public void run() {
-        System.out.println("请输入用户名：");
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("请输入用户名：");   
         String username = scanner.nextLine();
         System.out.println("请输入密码：");
-        String password = scanner.nextLine();
+        String rawPassword = scanner.nextLine();
         System.out.println("请输入邮箱：");
         String email = scanner.nextLine();
         System.out.println("请输入电话号码：");
         String phone = scanner.nextLine();
-        System.out.print("请输入用户等级: ");
+        System.out.println("请输入注册日期（格式：yyyy-MM-dd）：");
+        String registrationDate = scanner.nextLine();
+        System.out.println("请输入用户等级：");
         String userLevel = scanner.nextLine();
 
-        // 注册日期可以直接使用当前日期
-        Date registrationDate = new Date(System.currentTimeMillis());
-
-        if (isValidUsername(username) && isValidPassword(password) && isValidEmail(email)) {
-            if (registerCustomer(username, password, email, phone, registrationDate, userLevel)) {
-                System.out.println("注册成功！");
-            } else {
-                System.out.println("注册失败，用户名已存在！");
-            }
+        if (isValidUsername(username) && isValidPassword(rawPassword) && isValidEmail(email)) {
+            String hashedPassword = hashPassword(rawPassword);
+            Customer customer = new Customer(username, hashedPassword, email, phone, registrationDate, userLevel);
+            customersList.add(customer);
+            System.out.println("注册成功！");
         } else {
             System.out.println("用户名、密码或邮箱不符合要求，注册失败！");
         }
     }
-  
-
-    private boolean registerCustomer(String username, String userpassword, String useremail, String phone, Date registrationDate, String userLevel) {
-          String encryptedPassword=hashPassword(userpassword);
-        // 创建 Customer 对象
-        Customer customer = new Customer(username, encryptedPassword, useremail, phone, registrationDate, userLevel);
-
-        // 插入用户信息到 Excel 文件
-        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));
-             FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
-            Sheet sheet = workbook.getSheetAt(0);
-            if (sheet == null) {
-                sheet = workbook.createSheet("Customers");
-            }
-
-            int rowCount = sheet.getLastRowNum();
-            Row row = sheet.createRow(++rowCount);
-
-            int columnCount = 0;
-            Cell cell = row.createCell(columnCount++);
-            cell.setCellValue(customer.getUsername());
-
-            cell = row.createCell(columnCount++);
-            cell.setCellValue(customer.getUserpassword());
-
-            cell = row.createCell(columnCount++);
-            cell.setCellValue(customer.getUseremail());
-
-            cell = row.createCell(columnCount++);
-            cell.setCellValue(customer.getPhone());
-
-            cell = row.createCell(columnCount++);
-            cell.setCellValue(customer.getRegistrationDate().toString());
-
-            cell = row.createCell(columnCount);
-            cell.setCellValue(customer.getUserLevel());
-
-            workbook.write(fileOut);
-            System.out.println("用户注册成功！");
-            return true;
-        } catch (IOException e) {
-            System.out.println("用户注册失败: " + e.getMessage());
-            return false;
-        }
-        
-    }
-    
 
     private boolean isValidUsername(String username) {
         return username.length() >= 5;
@@ -112,8 +61,7 @@ public class CustomerRegister {
         // 简单的邮箱格式验证
         return email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
     }
-
-
+    
     // 使用MD5加密
     private static String hashPassword(String password) {
         try {

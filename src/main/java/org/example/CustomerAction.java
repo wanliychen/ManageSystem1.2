@@ -1,17 +1,24 @@
 package org.example;
 
-
-import java.io.IOException;
 import java.util.Scanner;
 
-public class CustomerAction implements Actionable{
+public class CustomerAction implements Actionable {
+    private CustomerDatabase customerDatabase;
+    private ProductDatabase productDatabase;
+    private Scanner scanner;
 
-    @Override
-    public void run() throws IOException {
-        Scanner scanner=new Scanner(System.in);
-        
-        RunShopping runShopping=new RunShopping();
-        CustomerPasswordManage cpm=new CustomerPasswordManage();
+     public CustomerAction(CustomerDatabase customerDatabase, ProductDatabase productDatabase) {
+        this.customerDatabase = customerDatabase;
+        this.productDatabase = productDatabase;
+        this.scanner = new Scanner(System.in);
+    }
+
+@Override
+public void run() {
+   
+    RunShopping runShopping = new RunShopping(productDatabase); 
+    CustomerPasswordManage cpm = new CustomerPasswordManage(customerDatabase);
+
         while (true) {
             displayMenu();
             int choice = scanner.nextInt();
@@ -19,7 +26,7 @@ public class CustomerAction implements Actionable{
 
             switch (choice) {
                 case 1:
-                    runShopping.run();
+                    runShopping.run(); // 确保 RunShopping 的构造函数符合要求
                     break;
                 case 2:
                     cpm.changePassword();
@@ -41,3 +48,4 @@ public class CustomerAction implements Actionable{
         System.out.println("3. 退出登录");
     }
 }
+

@@ -6,7 +6,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.Random;
 import java.util.Scanner;
-import java.util.regex.Pattern;
+
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,15 +16,20 @@ public class AdministratorPasswordManage {
     String adminPassword;
 
     private static final String ADMIN_FILE = "admins.xlsx";
-    private static final String CUSTOMER_FILE = "customers.xlsx";
-
+   
+  private CustomerDatabase customerDatabase; 
+    
     private Scanner scanner = new Scanner(System.in);
+
+    public AdministratorPasswordManage(CustomerDatabase customerDatabase) {
+        this.customerDatabase = customerDatabase;
+    }
 
     public void run() {
         while (true) {
             displayMenu();
             int choice = scanner.nextInt();
-            scanner.nextLine(); // 消耗换行符
+            scanner.nextLine(); 
 
             switch (choice) {
                 case 1:
@@ -95,19 +100,19 @@ public class AdministratorPasswordManage {
     }
 
 
-
-    // 重置特定用户的密码
-    private void resetCustomerPassword() {
+    public void resetCustomerPassword() {
         System.out.println("输入用户名：");
-        String username = scanner.next();
-        // 设置一个用户对象
-        Customer customer = findCustomerByUsername(username);
-        if (customer != null) { // 用户对象存在
-            String newPassword = generateRandomPassword(); // 生成一个密码
-        
-            if(changeUserPassword(newPassword, username)){
-                System.out.println("您好，您的密码已被重置为： " + newPassword );
-            }
+        String username = scanner.nextLine();
+        String newPassword = generateRandomPassword();
+        String hashedPassword = hashPassword(newPassword);
+
+        Customer customer = customerDatabase.findCustomerByUsername(username);
+        if (customer != null) {
+            customer.setPassword(hashedPassword);
+            customerDatabase.updateCustomer(username, customer);
+            System.out.println("密码已成功重置为： " + newPassword);
+        } else {
+            System.out.println("用户不存在！");
         }
     }
 
@@ -118,28 +123,21 @@ public class AdministratorPasswordManage {
         String DIGITS = "0123456789";
         String SPECIAL_CHARS = "!@#$%^&*()-_=+[]{}|;:,.<>?";
         
-    
         Random random = new Random();
         StringBuilder password = new StringBuilder();
-
         // 确保密码中包含至少一个小写字母
         password.append(LOWERCASE_CHARS.charAt(random.nextInt(LOWERCASE_CHARS.length())));
-
         // 确保密码中包含至少一个大写字母
         password.append(UPPERCASE_CHARS.charAt(random.nextInt(UPPERCASE_CHARS.length())));
-
         // 确保密码中包含至少一个数字
         password.append(DIGITS.charAt(random.nextInt(DIGITS.length())));
-
         // 确保密码中包含至少一个特殊字符
         password.append(SPECIAL_CHARS.charAt(random.nextInt(SPECIAL_CHARS.length())));
-
         // 填充剩余的密码长度
         for (int i = 4; i < 10; i++) {
             String allChars = LOWERCASE_CHARS + UPPERCASE_CHARS + DIGITS + SPECIAL_CHARS;
             password.append(allChars.charAt(random.nextInt(allChars.length())));
         }
-
         // 将密码字符随机打乱
         char[] passwordArray = password.toString().toCharArray();
         for (int i = 0; i < passwordArray.length; i++) {
@@ -152,12 +150,6 @@ public class AdministratorPasswordManage {
         return new String(passwordArray);
     }
 
-
-    // 通过用户名查找用户
-    private Customer findCustomerByUsername(String username) {
-        // 返回用户数据
-        return CustomerDatabase.findCustomerByUsername(username);
-    }
 
 
     // 使用MD5加密
@@ -174,37 +166,4 @@ public class AdministratorPasswordManage {
             throw new RuntimeException("MD5 algorithm not found", e);
         }
     }
-
-    private boolean changeUserPassword(String rawNewpassword,String username) {
-        String newpassword=hashPassword(rawNewpassword);
-
-        Pattern passwordPattern = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$");
-        if (passwordPattern.matcher(rawNewpassword).matches()) {
-            try (Workbook workbook = new XSSFWorkbook(new FileInputStream(CUSTOMER_FILE));
-                 FileOutputStream fileOut = new FileOutputStream(CUSTOMER_FILE)) {
-                Sheet sheet = workbook.getSheetAt(0);
-                if (sheet == null) {
-                    System.out.println("未找到用户或密码未更改。");
-                    return false;
-                }
-
-                for (Row row : sheet) {
-                    if (row.getCell(0).getStringCellValue().equals(username)) {
-                        row.getCell(1).setCellValue(newpassword);
-                        workbook.write(fileOut);
-                        System.out.println("用户密码已成功更改！");
-                        return true;
-                    }
-                }
-                System.out.println("未找到用户或密码未更改。");
-            } catch (IOException e) {
-                System.out.println("更改用户密码时出错: " + e.getMessage());
-            }
-        } else {
-            System.out.println("新密码不符合要求。");
-            return false;
-        }
-        return false;
-    }
-
 }

@@ -1,19 +1,20 @@
 package org.example;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Scanner;
 
+public class RunShopping implements Actionable {
 
-public class RunShopping implements Actionable{
-    
-    Scanner scanner=new Scanner(System.in);
-    Customer customer=new Customer();
-    CustomerShoppingCart shoppingCart=new CustomerShoppingCart(customer);
-    ProductDatabase productDatabase=new ProductDatabase();
+    Scanner scanner = new Scanner(System.in);
+    Customer customer = new Customer(null, null, null, null, null, null);
+    CustomerShoppingCart shoppingCart = new CustomerShoppingCart();
+    ProductDatabase productDatabase;
 
- 
+    public RunShopping(ProductDatabase productDatabase) {
+        this.productDatabase = productDatabase;
+    }
+
     @Override
-    public void run() throws IOException {
+    public void run() {
         while (true) {
             displayMenu();
             int choice = scanner.nextInt();
@@ -21,7 +22,7 @@ public class RunShopping implements Actionable{
 
             switch (choice) {
                 case 1:
-                    shoppingCart.addToCart();
+                    shoppingCart.addToCart(productDatabase);
                     break;
                 case 2:
                     shoppingCart.removeFromCart();
@@ -33,7 +34,7 @@ public class RunShopping implements Actionable{
                     shoppingCart.getPurchaseHistory();
                     break;
                 case 5:
-                    shoppingCart.checkout();
+                    shoppingCart.checkout(productDatabase);
                     break;
                 case 6:
                     System.out.println("退出用户系统");
@@ -54,5 +55,4 @@ public class RunShopping implements Actionable{
         System.out.println("5. 结账");
         System.out.println("6. 退出");
     }
-    
 }

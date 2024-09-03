@@ -1,6 +1,5 @@
 package org.example;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,16 +7,15 @@ public class RunProduct implements Actionable {
     private Scanner scanner;
     private ProductDatabase productDatabase;
 
-    public RunProduct() {
+    public RunProduct(List<Product> products) {
         this.scanner = new Scanner(System.in);
-        this.productDatabase = new ProductDatabase();
+        this.productDatabase = new ProductDatabase(products);  // 使用实际的顾客列表初始化
     }
 
     @Override
-    public void run() throws IOException {
+    public void run() {
         while (true) {
             displayMenu();
-            
             int choice = scanner.nextInt();
             scanner.nextLine(); // 消耗换行符
 
@@ -57,7 +55,7 @@ public class RunProduct implements Actionable {
         System.out.println("6. 退出");
     }
 
-    private void addProduct() throws IOException {
+    private void addProduct() {
         System.out.println("请输入商品ID：");
         int productId = scanner.nextInt();
         scanner.nextLine(); // 消耗换行符
@@ -82,7 +80,7 @@ public class RunProduct implements Actionable {
         System.out.println("商品添加成功！");
     }
 
-    private void deleteProduct() throws IOException {
+    private void deleteProduct() {
         System.out.println("请输入要删除的商品ID：");
         int deleteProductId = scanner.nextInt();
         scanner.nextLine(); // 消耗换行符
@@ -90,7 +88,7 @@ public class RunProduct implements Actionable {
         System.out.println("商品删除成功！");
     }
 
-    private void findProduct() throws IOException {
+    private void findProduct() {
         System.out.println("请输入要查找的商品ID：");
         int findProductId = scanner.nextInt();
         scanner.nextLine(); // 消耗换行符
@@ -109,7 +107,7 @@ public class RunProduct implements Actionable {
         }
     }
 
-    private void updateProduct() throws IOException {
+    private void updateProduct() {
         System.out.println("请输入要更新的商品ID：");
         int updateProductId = scanner.nextInt();
         scanner.nextLine();
@@ -134,12 +132,11 @@ public class RunProduct implements Actionable {
         System.out.println("商品更新成功！");
     }
 
-    private void displayAllProducts() throws IOException {
+    private void displayAllProducts() {
         List<Product> allProducts = productDatabase.getAllProducts();
         System.out.println("所有商品：");
         for (Product product : allProducts) {
             System.out.println(product);
         }
     }
-
 }

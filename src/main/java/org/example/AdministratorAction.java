@@ -1,30 +1,36 @@
 package org.example;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
-public class AdministratorAction implements Actionable{
+public class AdministratorAction implements Actionable {
+    
+    private List<Customer> customers;
+    private List<Product>  products;
+
+    public AdministratorAction(List<Customer> customers,List<Product>  products) {
+        this.customers = customers;
+        this.products  = products;
+    }
 
     @Override
-    public void run() throws IOException{
-        Scanner scanner=new Scanner(System.in);
-        
-        RunProduct runProduct=new RunProduct();
-        RunCustomer runCustomer=new RunCustomer();
-        AdministratorPasswordManage apm=new AdministratorPasswordManage();
-        Administrator admin=new Administrator();
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
 
+        RunProduct runProduct = new RunProduct(products);
+        RunCustomer runCustomer = new RunCustomer(customers);
+        CustomerDatabase customerDatabase = new CustomerDatabase(customers);
+        AdministratorPasswordManage apm = new AdministratorPasswordManage(customerDatabase);
 
-        while(true){
+        while (true) {
             displayMenu();
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // 消耗换行符
-
+            scanner.nextLine();
 
             switch (choice) {
                 case 1:
-                    runProduct.run();;
+                    runProduct.run();
                     break;
                 case 2:
                     runCustomer.run();
@@ -34,7 +40,6 @@ public class AdministratorAction implements Actionable{
                     break;
                 case 4:
                     System.out.println("退出管理员系统");
-                    admin.logoutAdmin();
                     return;
                 default:
                     System.out.println("无效的选择，请重新输入。");
@@ -43,7 +48,7 @@ public class AdministratorAction implements Actionable{
     }
 
     @Override
-    public void displayMenu(){
+    public void displayMenu() {
         System.out.println("请选择操作：");
         System.out.println("1. 商品管理");
         System.out.println("2. 用户管理");
@@ -51,4 +56,3 @@ public class AdministratorAction implements Actionable{
         System.out.println("4. 退出管理员登录");
     }
 }
-

@@ -1,28 +1,25 @@
 package org.example;
 
-import java.sql.Date;
-
 public class Customer {
-
-    // 用户信息
     private String username;
-    private String userpassword;
-    private String useremail;
+    private String password;
+    private String email;
     private String phone;
-    private Date registrationDate;
+    private String registrationDate; 
     private String userLevel;
 
-    public Customer() {}
-
-    public Customer(String username, String userpassword, String useremail, String phone, Date registrationDate, String userLevel) {
+    public Customer(){};
+    
+    public Customer(String username, String password, String email, String phone, String registrationDate, String userLevel) {
         this.username = username;
-        this.userpassword = userpassword;
-        this.useremail = useremail;
+        this.password = password;
+        this.email = email;
         this.phone = phone;
         this.registrationDate = registrationDate;
         this.userLevel = userLevel;
     }
 
+    
     public String getUsername() {
         return username;
     }
@@ -31,20 +28,20 @@ public class Customer {
         this.username = username;
     }
 
-    public String getUserpassword() {
-        return userpassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setUserpassword(String userpassword) {
-        this.userpassword = userpassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getUseremail() {
-        return useremail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUseremail(String useremail) {
-        this.useremail = useremail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPhone() {
@@ -55,11 +52,11 @@ public class Customer {
         this.phone = phone;
     }
 
-    public Date getRegistrationDate() {
+    public String getRegistrationDate() {
         return registrationDate;
     }
 
-    public void setRegistrationDate(Date registrationDate) {
+    public void setRegistrationDate(String registrationDate) {
         this.registrationDate = registrationDate;
     }
 
@@ -74,13 +71,12 @@ public class Customer {
     @Override
     public String toString() {
         return "Customer{" +
-            "username='" + username + '\'' +
-            ", userpassword='" + userpassword + '\'' +
-            ", useremail='" + useremail + '\'' +
-            ", phone='" + phone + '\'' +
-            ", registrationDate=" + registrationDate +
-            ", userLevel='" + userLevel + '\'' +
-            '}';
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", registrationDate='" + registrationDate + '\'' +
+                ", userLevel='" + userLevel + '\'' +
+                '}';
     }
-
 }

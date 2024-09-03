@@ -22,7 +22,7 @@ public class Product {
         this.nums = nums;
     }
 
-    // Getters and Setters
+    
     public int getProductId() {
         return productId;
     }

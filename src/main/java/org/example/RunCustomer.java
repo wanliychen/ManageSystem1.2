@@ -5,20 +5,20 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Scanner;
 
-public class RunCustomer implements Actionable{
+public class RunCustomer implements Actionable {
     private Scanner scanner;
     private CustomerDatabase customerDatabase;
 
-    public RunCustomer() {
+    public RunCustomer(List<Customer> customers) {
         this.scanner = new Scanner(System.in);
-        this.customerDatabase = new CustomerDatabase();
+        this.customerDatabase = new CustomerDatabase(customers);  // 使用实际的顾客列表初始化
     }
+
 
     @Override
     public void run() {
         while (true) {
             displayMenu();
-            
             int choice = scanner.nextInt();
             scanner.nextLine(); // 消耗换行符
 
@@ -68,12 +68,12 @@ public class RunCustomer implements Actionable{
         System.out.println("请输入电话号码：");
         String phone = scanner.nextLine();
         System.out.println("请输入注册日期（格式：yyyy-MM-dd）：");
-        String registrationDate = scanner.nextLine();
+        String registrationDateStr = scanner.nextLine();
         System.out.println("请输入用户等级：");
         String userLevel = scanner.nextLine();
 
-        String hashPassword=hashPassword(password);
-        Customer newCustomer = new Customer(username, hashPassword, useremail, phone, java.sql.Date.valueOf(registrationDate), userLevel);
+        String hashPassword= hashPassword(password);
+        Customer newCustomer = new Customer(username, hashPassword, useremail, phone, registrationDateStr, userLevel);
         customerDatabase.addCustomer(newCustomer);
         System.out.println("用户添加成功！");
     }
@@ -106,14 +106,12 @@ public class RunCustomer implements Actionable{
         System.out.println("请输入新的电话号码：");
         String newPhone = scanner.nextLine();
         System.out.println("请输入新的注册日期（格式：yyyy-MM-dd）：");
-        String newRegistrationDate = scanner.nextLine();
+        String newRegistrationDateStr = scanner.nextLine();
         System.out.println("请输入新的用户等级：");
         String newUserLevel = scanner.nextLine();
-
-        // 加密密码
         String hashedPassword = hashPassword(newPassword);
 
-        Customer updatedCustomer = new Customer(updateUsername, hashedPassword, newUseremail, newPhone, java.sql.Date.valueOf(newRegistrationDate), newUserLevel);
+        Customer updatedCustomer = new Customer(updateUsername, hashedPassword, newUseremail, newPhone, newRegistrationDateStr, newUserLevel);
         customerDatabase.updateCustomer(updateUsername, updatedCustomer);
         System.out.println("用户更新成功！");
     }
@@ -126,7 +124,6 @@ public class RunCustomer implements Actionable{
         }
     }
 
-    // 使用MD5加密
     private static String hashPassword(String password) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -140,5 +137,4 @@ public class RunCustomer implements Actionable{
             throw new RuntimeException("MD5 algorithm not found", e);
         }
     }
-    
 }
