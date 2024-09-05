@@ -99,6 +99,7 @@ public class RunCustomer implements Actionable {
     private void updateCustomer() {
         System.out.println("请输入要更新的用户名：");
         String updateUsername = scanner.nextLine();
+        
         Customer existingCustomer = customerDatabase. findCustomerByUsername(updateUsername);
         if (existingCustomer == null) {
             System.out.println("用户名不存在，请确认输入是否正确。");
