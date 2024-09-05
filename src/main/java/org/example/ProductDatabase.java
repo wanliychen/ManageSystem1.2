@@ -85,7 +85,6 @@ public class ProductDatabase {
                 row.createCell(5).setCellValue(product.getRetailPrice());
                 row.createCell(6).setCellValue(product.getNums());
             }
-
             // 将工作簿写入文件
             workbook.write(fos);
             System.out.println("产品数据已成功保存到文件: " + PRODUCT_FILE);

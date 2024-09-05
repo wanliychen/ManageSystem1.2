@@ -80,11 +80,11 @@ public class CustomerDatabase {
                 row.createCell(3).setCellValue(customer.getPhone());
                 row.createCell(4).setCellValue(customer.getRegistrationDate()); // 现在是 String 类型
                 row.createCell(5).setCellValue(customer.getUserLevel());
-                 // 将工作簿写入文件
-                workbook.write(fileOut);
-
-                System.out.println("客户数据已成功保存到文件: " + CUSTOMER_FILE);
+                
             }     
+             // 将工作簿写入文件
+            workbook.write(fileOut);
+            System.out.println("客户数据已成功保存到文件: " + CUSTOMER_FILE);
 
         } catch (IOException e) {
             System.out.println("保存客户数据时出错: " + e.getMessage());
